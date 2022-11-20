@@ -1,0 +1,7 @@
+Eltárolt táblák:
+Hallgató
+  Oktató
+Épület
+Terem
+Kurzus
+  Viszga

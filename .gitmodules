@@ -1,0 +1,3 @@
+[submodule "fidget"]
+	path = fidget
+	url = https://github.com/treeform/fidget

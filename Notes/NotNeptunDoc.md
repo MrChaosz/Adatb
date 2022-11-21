@@ -4,7 +4,22 @@ A program Apache XAMP-ot használ, mysql adatbázissal, nimble programozási nye
 ## Inditás
 Inditás lehetséges egyenesen a NotNeptun mappájában lévő exe fájlal, de ha valamiért nem működne akkor szükségünk lesz a nimble-re: https://nim-lang.org/install.html.
 
-Forditani és inditani egyszerre a **nim c -r ./NotNeptun.nim -d:release --threads:on** paranccsal lehet.
+Forditani és inditani egyszerre a `nim c -r ./NotNeptun.nim -d:release --threads:on` paranccsal lehet. Utána pedig a létrehozott bináris fájlal.
 
 ## Egyed-Kapcsolati Diagram
 ![E-K diagramm](./EK.png "Egyed-kapcsolati diagramm")
+
+## Relációs sémák
+Hallgato(<u>id</u>, szak, vezeteknev, keresztnev) <br/>
+Oktato(<u>id</u>, oktatasKezdese, vezeteknev, keresztnev)
+Kurzus(<u>kod</u>, nev, idopont) <br/>
+Terem(<u>epuletnev</u>, <u>nev</u>, ferohely) <br/>
+Epulet(<u>nev</u>, varos, utca) <br/>
+
+ResztVesz(<u>Hallgato.kod</u>, <u>Kurzus.kod</u>) <br/>
+Oktat(<u>Oktato.id</u>, <u>Kurzus.kod</u>) <br/>
+TartvaVan(<u>Kurzus.kod</u>, <u>Terem.epuletnev</u>) <br/>
+
+## 2CNF
+
+## 3CNF

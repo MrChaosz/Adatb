@@ -10,9 +10,9 @@ Forditani és inditani egyszerre a `nim c -r ./NotNeptun.nim -d:release --thread
 ![E-K diagramm](./EK.png "Egyed-kapcsolati diagramm")
 
 ## Relációs sémák
-Hallgato(<u>id</u>, szak, vezeteknev, keresztnev) <br/>
-Oktato(<u>id</u>, oktatasKezdese, vezeteknev, keresztnev)
-Kurzus(<u>kod</u>, nev, idopont) <br/>
+Hallgato(<u>kód</u>, vezeteknev, keresztnev, szak) <br/>
+Oktato(<u>kód</u>, vezeteknev, keresztnev, kezdes)
+Kurzus(<u>nev</u>, idopont, kod) <br/>
 Terem(<u>epuletnev</u>, <u>nev</u>, ferohely) <br/>
 Epulet(<u>nev</u>, varos, utca) <br/>
 

@@ -11,6 +11,7 @@ var
   textInput:seq[string]
   singleInput:string
   ready:bool = false
+  connected:bool = false
 
 # TODO: vonalak hogy egyértelműbbek legyenek a dolgok
 
@@ -24,7 +25,7 @@ proc viewHallgatok() =
     text "text":
       box 320, 40 , 800, 600
       fill "#000000"
-      font "IBM Plex Sans", 24, 400, 0, hLeft, vTop
+      font "IBM Plex Sans", 20, 400, 0, hLeft, vTop
       s.add "Kód\tVezetéknév\tKeresztnév\tSzak\n"
       for x in datas:
         s.add( ( $x[0] & "\t" & $x[1] & "\t \t" & $x[2] & "\t \t" & $x[3] & "\n") )
@@ -47,7 +48,7 @@ proc viewKurzusok() =
     text "text":
       box 320, 40 , 800, 600
       fill "#000000"
-      font "IBM Plex Sans", 24, 400, 0, hLeft, vTop
+      font "IBM Plex Sans", 20, 400, 0, hLeft, vTop
       s.add "Név \t \t \tIdőpont\t \t \tKód\n"
       for x in datas:
         s.add( ($x[0] & " \t \t" & $x[1] & "\t \t" & $x[2] & "\n") )
@@ -70,7 +71,7 @@ proc viewTermek() =
     text "text":
       box 320, 40 , 800, 600
       fill "#000000"
-      font "IBM Plex Sans", 24, 400, 0, hLeft, vTop
+      font "IBM Plex Sans", 20, 400, 0, hLeft, vTop
       s.add "Név\t \t \tFerőhely\t \tÉpület\n"
       for x in datas:
         s.add( ($x[0] & "\t" & $x[1] & "\t \t" & $x[2] & "\n") )
@@ -93,7 +94,7 @@ proc viewEpuletek() =
     text "text":
       box 320, 40 , 950, 600
       fill "#000000"
-      font "IBM Plex Sans", 24, 400, 0, hLeft, vTop
+      font "IBM Plex Sans", 20, 400, 0, hLeft, vTop
       s.add "Név \t \t \tVáros\t \tUtca\n"
       for x in datas:
         s.add( ($x[0] & "\t \t \t" & $x[1] & "\t \t" & $x[2] & "\n") )
@@ -115,7 +116,7 @@ proc viewOktatok() =
     text "text":
       box 320, 40 , 950, 600
       fill "#000000"
-      font "IBM Plex Sans", 24, 400, 0, hLeft, vTop
+      font "IBM Plex Sans", 20, 400, 0, hLeft, vTop
       s.add "Kód\tVezetéknév\tKeresztnév\tSzak\tKezdés\n"
       for x in datas:
         s.add( ( x[0] & "\t" & $x[1] & "\t \t" & $x[2] & "\t \t" & $x[3] & "\t" & $x[4] & "\n") )
@@ -235,7 +236,7 @@ proc hozzaAd() =
 
             insertData( dropDownSelected, textInput )
 
-            echo textInput
+            #echo textInput
           for i in countup(0, textInput.len()-1):
             textInput[i] = ""
         text "text":
@@ -349,7 +350,7 @@ proc torles() =
 
             deleteData( dropDownSelected, singleInput )
 
-            echo singleInput
+            #echo singleInput
             singleInput = ""
         text "text":
           box 0, 5, 90, 20
@@ -461,7 +462,7 @@ proc modositas() =
             # VEGREHAJTANDO ALGO
             changeData( dropDownSelected, singleInput, textInput)
 
-            echo singleInput
+            #echo singleInput
             singleInput = ""
         text "text":
           box 0, 5, 90, 20
@@ -528,6 +529,68 @@ proc modositas() =
       box 315, 27, 950, 715
       fill "#d6d6d6"
 
+proc connect() =
+  frame "textLayout":
+    counterAxisSizingMode csAuto
+    text "kivalasztottTabla":
+      box 430, 40, 100, 30
+      fill "#000000"
+      font "IBM Plex Sans", 26, 400, 0, hCenter, vCenter
+      characters dropDownSelected
+    text "adatok":
+      box 320, 60, 900, 100
+      fill "#000000"
+      font "IBM Plex Sans", 24, 400, 0, hLeft, vCenter
+      characters "Host\t \tUser\t \tPassword\tDatabaseName"
+    rectangle "bg":
+        #box 20, 70, 800, 3
+        #ne nagyon puszkáljam ha lehet
+        box 340, 130, 870, 3
+        fill "#000000"
+        cornerRadius 5
+        strokeWeight 1
+    group "input":
+      for i, x in ["Host","User","Passowrd","tDatabaseName"]:
+        textInput.setLen(4)
+        text "text":
+          box 335 + (i*185), 145, 140, 30
+          fill "#000000"
+          strokeWeight 1
+          font "IBM Plex Sans", 22, 400, 0, hLeft, vCenter
+          binding textInput[i]
+        rectangle "bg":
+          box 320 + (i*185), 140, 140, 30
+          stroke "#72bdd0"
+          cornerRadius 5
+          strokeWeight 1
+    group "button":
+        box 330, 200, 120, 30
+        cornerRadius 5
+        fill "#6d6d6d"
+        onHover:
+          fill "#9F9EB2"
+        onDown:
+          fill "#a5cddc"
+          if( all( textInput, proc (x:string ):bool = x != "" ) ):
+            ready = true
+          if ready:
+            dbConn(textInput)
+            connected = true
+            #echo textInput
+            selectedTab = ""
+          for i in countup(0, textInput.len()-1):
+            textInput[i] = ""
+        text "text":
+          box 0, 2, 120, 20
+          fill "#000000"
+          font "IBM Plex Sans", 24, 200, 0, hCenter, vCenter
+          characters "Csatlakozz"
+    rectangle "view":
+      constraints cStretch, cMin
+      counterAxisSizingMode csAuto
+      box 315, 27, 950, 715
+      fill "#d6d6d6"
+
 proc drawMain() = 
     frame "NotNeptun":
       counterAxisSizingMode csAuto
@@ -536,32 +599,61 @@ proc drawMain() =
       box root.box
       fill "#525252"
 
-      for i, tabName in ["Hallgatók","Oktatók", "Kurzusok", 
-      "Termek", "Épületek", "Hozzáadás", "Módositás", "Törlés"]:
+      if( connected == false ):
         group "tabs":
+            counterAxisSizingMode csAuto
+            box 43, 50 , 229, 45
+            fill "#6d6d6d"
+            layoutAlign laCenter
+            onHover:
+              fill "#9F9EB2"
+            onClick:
+              selectedTab = "Csatlakozás"
+              connect()
+              textInput.setLen(0)
+            text "text":
+              box 15, 10 , 190, 30
+              if selectedTab == "Csatlakozás":
+                fill "#94d5ff"
+              else:
+                fill "#000000"
+              constraints cCenter, cCenter
+              font "IBM Plex Sans", 24, 400, 0, hCenter, vCenter
+              characters "Csatlakozás"
+        rectangle "menu":
           counterAxisSizingMode csAuto
-          box 43, (50 + (i*70) ) , 229, 45
-          fill "#6d6d6d"
-          layoutAlign laCenter
-          onHover:
-            fill "#9F9EB2"
-          onClick:
-            selectedTab = tabName
-          text "text":
-            box 15, 10 , 190, 30
-            if selectedTab == tabName:
-              fill "#94d5ff"
-            else:
-              fill "#000000"
-            constraints cCenter, cCenter
-            font "IBM Plex Sans", 24, 400, 0, hCenter, vCenter
-            characters tabName
-      rectangle "menu":
+          box 26, 27, 261, 715
+          fill "#d9d9d9"
+
+      if( connected == true ):
+        for i, tabName in ["Hallgatók","Oktatók", "Kurzusok", 
+        "Termek", "Épületek", "Hozzáadás", "Módositás", "Törlés"]:
+          group "tabs":
+            counterAxisSizingMode csAuto
+            box 43, (50 + (i*70) ) , 229, 45
+            fill "#6d6d6d"
+            layoutAlign laCenter
+            onHover:
+              fill "#9F9EB2"
+            onClick:
+              selectedTab = tabName
+            text "text":
+              box 15, 10 , 190, 30
+              if selectedTab == tabName:
+                fill "#94d5ff"
+              else:
+                fill "#000000"
+              constraints cCenter, cCenter
+              font "IBM Plex Sans", 24, 400, 0, hCenter, vCenter
+              characters tabName
+        rectangle "menu":
           counterAxisSizingMode csAuto
           box 26, 27, 261, 715
           fill "#d9d9d9"
       
       case selectedTab:
+        of "Csatlakozás":
+          connect()
         of "Hallgatók":
           viewHallgatok()
         of "Oktatók":
